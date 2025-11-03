@@ -69,7 +69,12 @@ jobs:
         run: |
           sudo apt-get install -y musl-tools
 
-      - name: Build release binary
+      - name: Build release binary (macOS)
+        if: runner.os == 'macOS'
+        run: RUSTFLAGS="-D warnings -C link-arg=-framework -C link-arg=AppKit -C link-arg=-framework -C link-arg=Foundation" cargo build --release --target ${{ matrix.target }}
+
+      - name: Build release binary (non-macOS)
+        if: runner.os != 'macOS'
         run: cargo build --release --target ${{ matrix.target }}
 
       - name: Strip binary (Unix)
