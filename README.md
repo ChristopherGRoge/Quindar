@@ -26,15 +26,14 @@ This API provides a lightweight, native service that any AI agent can call via s
 Download the binary for your platform from the [Releases page](../../releases):
 
 - **Windows x64**: `quindar-tone-api-windows-x64.exe`
-- **macOS Intel**: `quindar-tone-api-macos-x64`
-- **macOS Apple Silicon**: `quindar-tone-api-macos-arm64`
-- **Linux x64**: `quindar-tone-api-linux-x64`
+- **Linux x64**: `quindar-tone-api-linux-x64` (glibc-based)
+- **Linux x64 (musl)**: `quindar-tone-api-linux-x64-musl` (static binary, works across all distros)
 
 ```bash
 # Windows: Double-click or run from terminal
 quindar-tone-api-windows-x64.exe
 
-# macOS/Linux: Make executable and run
+# Linux: Make executable and run
 chmod +x quindar-tone-api-*
 ./quindar-tone-api-*
 ```
