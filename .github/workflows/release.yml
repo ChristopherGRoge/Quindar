@@ -12,8 +12,6 @@ jobs:
   build:
     name: Build ${{ matrix.platform }}
     runs-on: ${{ matrix.os }}
-    env:
-      MACOSX_DEPLOYMENT_TARGET: "11.0"
     strategy:
       fail-fast: false
       matrix:
@@ -23,18 +21,6 @@ jobs:
             target: x86_64-pc-windows-msvc
             binary_name: quindar_api.exe
             asset_name: quindar-tone-api-windows-x64.exe
-
-          - platform: macOS x64 (Intel)
-            os: macos-13
-            target: x86_64-apple-darwin
-            binary_name: quindar_api
-            asset_name: quindar-tone-api-macos-x64
-
-          - platform: macOS ARM64 (Apple Silicon)
-            os: macos-14
-            target: aarch64-apple-darwin
-            binary_name: quindar_api
-            asset_name: quindar-tone-api-macos-arm64
 
           - platform: Linux x64
             os: ubuntu-latest
@@ -69,12 +55,7 @@ jobs:
         run: |
           sudo apt-get install -y musl-tools
 
-      - name: Build release binary (macOS)
-        if: runner.os == 'macOS'
-        run: RUSTFLAGS="-D warnings -C link-arg=-framework -C link-arg=AppKit -C link-arg=-framework -C link-arg=Foundation" cargo build --release --target ${{ matrix.target }}
-
-      - name: Build release binary (non-macOS)
-        if: runner.os != 'macOS'
+      - name: Build release binary
         run: cargo build --release --target ${{ matrix.target }}
 
       - name: Strip binary (Unix)

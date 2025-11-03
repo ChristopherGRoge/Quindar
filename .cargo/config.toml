@@ -1,8 +1,2 @@
 [build]
 rustflags = ["-D", "warnings"]
-
-[target.x86_64-apple-darwin]
-rustflags = ["-D", "warnings", "-C", "link-arg=-framework", "-C", "link-arg=AppKit", "-C", "link-arg=-framework", "-C", "link-arg=Foundation"]
-
-[target.aarch64-apple-darwin]
-rustflags = ["-D", "warnings", "-C", "link-arg=-framework", "-C", "link-arg=AppKit", "-C", "link-arg=-framework", "-C", "link-arg=Foundation"]
