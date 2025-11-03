@@ -42,6 +42,12 @@ jobs:
             binary_name: quindar_api
             asset_name: quindar-tone-api-linux-x64
 
+          - platform: Linux x64 (musl)
+            os: ubuntu-latest
+            target: x86_64-unknown-linux-musl
+            binary_name: quindar_api
+            asset_name: quindar-tone-api-linux-x64-musl
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -57,6 +63,11 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y libasound2-dev pkg-config libssl-dev
+
+      - name: Install musl tools
+        if: matrix.target == 'x86_64-unknown-linux-musl'
+        run: |
+          sudo apt-get install -y musl-tools
 
       - name: Set macOS RUSTFLAGS for AppKit
         if: runner.os == 'macOS'
