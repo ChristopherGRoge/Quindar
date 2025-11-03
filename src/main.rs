@@ -83,9 +83,9 @@ impl ToastUrgency {
 
     fn timeout_ms(&self) -> i32 {
         match self {
-            ToastUrgency::Info => 5000,       // 5 seconds
-            ToastUrgency::Warning => 8000,    // 8 seconds
-            ToastUrgency::Critical => 0,      // Persistent (requires dismissal)
+            ToastUrgency::Info => 5000,    // 5 seconds
+            ToastUrgency::Warning => 8000, // 8 seconds
+            ToastUrgency::Critical => 0,   // Persistent (requires dismissal)
         }
     }
 }
@@ -740,9 +740,12 @@ async fn play_tone_handler(
     // Priority: per-request > environment variable > false (default)
     let enable_toast = match payload.enable_toast {
         Some(val) => val,
-        None => std::env::var("ENABLE_TOAST_NOTIFICATIONS")
-            .unwrap_or_else(|_| "false".to_string())
-            .to_lowercase() == "true",
+        None => {
+            std::env::var("ENABLE_TOAST_NOTIFICATIONS")
+                .unwrap_or_else(|_| "false".to_string())
+                .to_lowercase()
+                == "true"
+        }
     };
 
     // Determine toast urgency level

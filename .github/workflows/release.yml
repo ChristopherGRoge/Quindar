@@ -69,9 +69,9 @@ jobs:
         run: |
           sudo apt-get install -y musl-tools
 
-      - name: Set macOS RUSTFLAGS for AppKit
+      - name: Set macOS RUSTFLAGS for AppKit and Foundation
         if: runner.os == 'macOS'
-        run: echo "RUSTFLAGS=-D warnings -C link-arg=-framework -C link-arg=AppKit" >> $GITHUB_ENV
+        run: echo "RUSTFLAGS=-D warnings -C link-arg=-framework -C link-arg=AppKit -C link-arg=-framework -C link-arg=Foundation" >> $GITHUB_ENV
 
       - name: Build release binary
         run: cargo build --release --target ${{ matrix.target }}
