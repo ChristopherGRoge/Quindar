@@ -3,7 +3,9 @@
 [![MIT License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Rust](https://img.shields.io/badge/Rust-1.87%2B-orange.svg)](https://www.rust-lang.org/)
 
-A Rust application that plays a Quindar tone followed by text-to-speech audio when called via API request. Includes optional cross-platform toast notifications for visual alerts alongside audio.
+A lightweight Rust application that plays a Quindar tone followed by text-to-speech audio when called via API request. Includes optional cross-platform toast notifications for visual alerts alongside audio.
+
+**Supported Platforms:** Windows x64, Linux x64 (glibc and musl)
 
 **For complete API documentation, see [Quindar-Break-In-Developer_guide.md](Quindar-Break-In-Developer_guide.md)**
 
