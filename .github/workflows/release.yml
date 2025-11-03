@@ -71,8 +71,6 @@ jobs:
 
       - name: Build release binary
         run: cargo build --release --target ${{ matrix.target }}
-        env:
-          RUSTFLAGS: ${{ runner.os == 'macOS' && '-D warnings -C link-arg=-framework -C link-arg=AppKit -C link-arg=-framework -C link-arg=Foundation' || '-D warnings' }}
 
       - name: Strip binary (Unix)
         if: runner.os != 'Windows'
