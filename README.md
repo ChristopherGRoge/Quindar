@@ -5,7 +5,7 @@
 
 A lightweight Rust application that plays a Quindar tone followed by text-to-speech audio when called via API request. Includes optional cross-platform toast notifications for visual alerts alongside audio.
 
-**Supported Platforms:** Windows x64, Linux x64 (glibc and musl)
+**Supported Platforms:** Windows x64, Linux x64
 
 **For complete API documentation, see [Quindar-Break-In-Developer_guide.md](Quindar-Break-In-Developer_guide.md)**
 
@@ -28,8 +28,7 @@ This API provides a lightweight, native service that any AI agent can call via s
 Download the binary for your platform from the [Releases page](../../releases):
 
 - **Windows x64**: `quindar-tone-api-windows-x64.exe`
-- **Linux x64**: `quindar-tone-api-linux-x64` (glibc-based)
-- **Linux x64 (musl)**: `quindar-tone-api-linux-x64-musl` (static binary, works across all distros)
+- **Linux x64**: `quindar-tone-api-linux-x64`
 
 ```bash
 # Windows: Double-click or run from terminal
