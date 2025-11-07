@@ -6,11 +6,15 @@ use axum::{
 };
 use msedge_tts::tts::{SpeechConfig, client::connect_async};
 use notify_rust::Notification;
+#[cfg(feature = "audio")]
 use rodio::{Decoder, OutputStream, Sink, Source};
 use serde::{Deserialize, Serialize};
+#[cfg(feature = "audio")]
 use std::f32::consts::PI;
+#[cfg(feature = "audio")]
 use std::io::Cursor;
 use std::sync::Arc;
+#[cfg(feature = "audio")]
 use std::time::Duration;
 use tokio::sync::mpsc;
 
@@ -139,6 +143,7 @@ struct AppState {
 }
 
 /// Generate Quindar tone samples
+#[cfg(feature = "audio")]
 fn generate_quindar_tone_samples(duration_ms: u32) -> Vec<f32> {
     let sample_rate = 48000;
     let frequency = 2500.0; // Hz - higher frequency is more audible
@@ -173,6 +178,7 @@ fn generate_quindar_tone_samples(duration_ms: u32) -> Vec<f32> {
 
 /// Generate three-note audience recall chime (like theater/concert hall chimes)
 /// Simple ascending C-E-G pattern, xylophone-like with echo and depth
+#[cfg(feature = "audio")]
 fn generate_three_note_chime() -> Vec<f32> {
     let sample_rate = 48000;
     let note_duration_ms = 800; // Longer notes for depth (800ms)
@@ -242,13 +248,22 @@ fn generate_three_note_chime() -> Vec<f32> {
 }
 
 /// Check if running in headless mode (no audio output)
+#[allow(dead_code)]
 fn is_headless_mode() -> bool {
-    std::env::var("HEADLESS_MODE")
-        .map(|v| v.eq_ignore_ascii_case("true") || v == "1")
-        .unwrap_or(false)
+    // Audio is unavailable if feature is disabled or HEADLESS_MODE is set
+    #[cfg(not(feature = "audio"))]
+    return true;
+
+    #[cfg(feature = "audio")]
+    {
+        std::env::var("HEADLESS_MODE")
+            .map(|v| v.eq_ignore_ascii_case("true") || v == "1")
+            .unwrap_or(false)
+    }
 }
 
 /// Play tones and audio based on tone type
+#[cfg(feature = "audio")]
 fn play_tones_and_audio(
     audio_bytes: Vec<u8>,
     volume: f32,
@@ -357,13 +372,26 @@ fn play_tones_and_audio(
     Ok(())
 }
 
+/// No-op version when audio is disabled
+#[cfg(not(feature = "audio"))]
+fn play_tones_and_audio(
+    _audio_bytes: Vec<u8>,
+    _volume: f32,
+    _tone_type: ToneType,
+) -> Result<(), String> {
+    println!("Audio feature disabled: Skipping audio playback (TTS generated successfully)");
+    Ok(())
+}
+
 /// Custom audio source for samples
+#[cfg(feature = "audio")]
 struct AudioSource {
     samples: Vec<f32>,
     sample_rate: u32,
     current: usize,
 }
 
+#[cfg(feature = "audio")]
 impl Iterator for AudioSource {
     type Item = f32;
 
@@ -378,6 +406,7 @@ impl Iterator for AudioSource {
     }
 }
 
+#[cfg(feature = "audio")]
 impl Source for AudioSource {
     fn current_frame_len(&self) -> Option<usize> {
         None
@@ -637,14 +666,25 @@ async fn process_transmission(req: TransmissionRequest) {
     // Now play tones and audio based on tone type
     let volume = req.volume;
     let tone_type = req.tone_type.clone();
-    if let Err(e) = tokio::task::spawn_blocking(move || {
-        if let Err(e) = play_tones_and_audio(audio_bytes, volume, tone_type) {
-            eprintln!("Error playing audio: {}", e);
-        }
-    })
-    .await
+
+    #[cfg(feature = "audio")]
     {
-        eprintln!("Audio playback task failed: {}", e);
+        if let Err(e) = tokio::task::spawn_blocking(move || {
+            if let Err(e) = play_tones_and_audio(audio_bytes, volume, tone_type) {
+                eprintln!("Error playing audio: {}", e);
+            }
+        })
+        .await
+        {
+            eprintln!("Audio playback task failed: {}", e);
+        }
+    }
+
+    #[cfg(not(feature = "audio"))]
+    {
+        if let Err(e) = play_tones_and_audio(audio_bytes, volume, tone_type) {
+            eprintln!("Error in audio-disabled mode: {}", e);
+        }
     }
 
     println!("Transmission complete!\n");
@@ -814,11 +854,21 @@ async fn main() {
     println!("Quindar Tone API server running on http://{}", bind_address);
     println!("TTS Provider: {}", tts_name);
 
-    if is_headless_mode() {
-        println!("Audio Output: HEADLESS MODE (no audio playback, TTS generation only)");
-        println!("  → Perfect for WSL, headless servers, and testing environments");
-    } else {
-        println!("Audio Output: ENABLED");
+    #[cfg(not(feature = "audio"))]
+    {
+        println!("Audio Output: DISABLED (compiled without audio support)");
+        println!("  → TTS generation and toast notifications only");
+        println!("  → Perfect for systems without ALSA or sound hardware");
+    }
+
+    #[cfg(feature = "audio")]
+    {
+        if is_headless_mode() {
+            println!("Audio Output: HEADLESS MODE (no audio playback, TTS generation only)");
+            println!("  → Perfect for WSL, headless servers, and testing environments");
+        } else {
+            println!("Audio Output: ENABLED");
+        }
     }
 
     println!("Transmission queue enabled - multiple requests will play sequentially");
