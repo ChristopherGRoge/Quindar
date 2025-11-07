@@ -93,6 +93,33 @@ cargo build --release --no-default-features
 
 The server will display: `Audio Output: DISABLED (compiled without audio support)`
 
+## Option 4: Development Container (Recommended for Development)
+
+**Perfect for consistent development environment with full sudo access.**
+
+Using VS Code Dev Containers, you get a pre-configured environment with all dependencies installed:
+
+**Prerequisites:**
+- Docker installed and running
+- VS Code with "Dev Containers" extension
+- User in docker group (provides sudo inside container)
+
+**Steps:**
+1. Open this project in VS Code
+2. Press `F1` → **Dev Containers: Reopen in Container**
+3. Wait for container to build (~5 minutes first time)
+4. Start developing with full sudo access!
+
+**What's included:**
+- ✅ Debian Linux (lightweight)
+- ✅ Rust toolchain (latest stable)
+- ✅ All system dependencies (ALSA, OpenSSL, pkg-config)
+- ✅ Sudo access for installing additional packages
+- ✅ Pre-configured VS Code with Rust extensions
+- ✅ Port 42069 automatically forwarded
+
+See [.devcontainer/README.md](.devcontainer/README.md) for detailed documentation.
+
 ## Setup
 
 1. Copy `.env.example` to `.env`:

@@ -1,0 +1,43 @@
+# Build artifacts
+target/
+*.exe
+*.pdb
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Rust
+**/*.rs.bk
+Cargo.lock
+
+# Environment
+.env
+.env.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Documentation (not needed in container)
+*.md
+!.devcontainer/README.md
+
+# CI/CD
+.github/
+
+# Test files
+tests/
+
+# Misc
+tmp/
+temp/
+*.log

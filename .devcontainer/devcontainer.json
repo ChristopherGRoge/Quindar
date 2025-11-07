@@ -1,0 +1,58 @@
+{
+  "name": "Quindar Tone API Dev Container",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": ".."
+  },
+
+  // Features to add to the dev container
+  "features": {
+    "ghcr.io/devcontainers/features/git:1": {},
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
+
+  // Configure VS Code settings
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash",
+        "rust-analyzer.checkOnSave.command": "clippy",
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "rust-lang.rust-analyzer"
+      },
+      "extensions": [
+        "rust-lang.rust-analyzer",
+        "vadimcn.vscode-lldb",
+        "tamasfe.even-better-toml",
+        "serayuzgur.crates",
+        "usernamehw.errorlens"
+      ]
+    }
+  },
+
+  // Expose the default API port
+  "forwardPorts": [42069],
+  "portsAttributes": {
+    "42069": {
+      "label": "Quindar API",
+      "onAutoForward": "notify"
+    }
+  },
+
+  // Run as non-root user but with sudo access
+  "remoteUser": "vscode",
+  "updateRemoteUserUID": true,
+
+  // Post-create command to set up the environment
+  "postCreateCommand": "rustc --version && cargo --version && echo '✅ Dev container ready!'",
+
+  // Mount docker socket for Docker-in-Docker if needed
+  "mounts": [
+    "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
+  ],
+
+  // Environment variables
+  "containerEnv": {
+    "RUST_BACKTRACE": "1"
+  }
+}
