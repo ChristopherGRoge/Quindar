@@ -66,6 +66,33 @@ cargo run --release
 
 **Note**: macOS and Windows users typically don't need additional system libraries.
 
+### Option 3: Build Without Audio (No ALSA Required)
+
+**Perfect for systems without sudo access, WSL, containers, or headless servers.**
+
+If you don't have ALSA libraries and can't install them, you can build without audio support. TTS generation and toast notifications will still work, but no sound will play.
+
+```bash
+git clone https://github.com/chrisroge/Quindar-Break-In-Communicator.git
+cd Quindar-Break-In-Communicator
+cp .env.example .env
+
+# Build without audio feature (no ALSA needed)
+cargo build --release --no-default-features
+
+# Run the binary
+./target/release/quindar_api
+```
+
+**What works without audio:**
+- ✅ TTS generation (Edge TTS or OpenAI)
+- ✅ Toast notifications
+- ✅ All API endpoints
+- ✅ Request queuing
+- ❌ Audio playback (silently skipped)
+
+The server will display: `Audio Output: DISABLED (compiled without audio support)`
+
 ## Setup
 
 1. Copy `.env.example` to `.env`:
